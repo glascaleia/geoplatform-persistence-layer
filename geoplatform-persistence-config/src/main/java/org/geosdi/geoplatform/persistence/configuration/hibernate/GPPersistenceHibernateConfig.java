@@ -35,11 +35,103 @@
  */
 package org.geosdi.geoplatform.persistence.configuration.hibernate;
 
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import java.util.Properties;
+import javax.sql.DataSource;
+import org.geosdi.geoplatform.persistence.configuration.properties.GPPersistenceConnector;
+import org.geosdi.geoplatform.persistence.configuration.properties.GPPersistenceHibProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.hibernate3.HibernateTransactionManager;
+import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
 /**
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
- * @email  giuseppe.lascaleia@geosdi.org
+ * @email giuseppe.lascaleia@geosdi.org
  */
+@Configuration
+@Profile(value = "hibernate")
+@EnableTransactionManagement
 public class GPPersistenceHibernateConfig {
 
+    @Autowired
+    private GPPersistenceConnector gpPersistenceConnector;
+    //
+    @Autowired
+    private GPPersistenceHibProperties gpHibernateProperties;
+
+    public AnnotationSessionFactoryBean gpSessionFactoryBean() {
+        final AnnotationSessionFactoryBean factoryBean = new AnnotationSessionFactoryBean();
+        factoryBean.setDataSource(this.gpDataSource());
+        factoryBean.setPackagesToScan(
+                this.gpPersistenceConnector.getPackagesToScan());
+        factoryBean.setHibernateProperties(this.gpHibernateProperties());
+
+        return factoryBean;
+    }
+
+    /**
+     * TODO : Change this implementation with {@link ComboPooledDataSource}
+     */
+    @Bean
+    public DataSource gpDataSource() {
+        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(
+                this.gpPersistenceConnector.getDriverClassName());
+        dataSource.setUrl(this.gpPersistenceConnector.getUrl());
+        dataSource.setUsername(this.gpPersistenceConnector.getUsername());
+        dataSource.setPassword(this.gpPersistenceConnector.getPassword());
+
+        return dataSource;
+    }
+
+    @Bean
+    public HibernateTransactionManager transactionManager() {
+        final HibernateTransactionManager txManager = new HibernateTransactionManager();
+        txManager.setSessionFactory(this.gpSessionFactoryBean().getObject());
+
+        return txManager;
+    }
+
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor sessionExceptionTranslationPostProcessor() {
+        return new PersistenceExceptionTranslationPostProcessor();
+    }
+
+    final Properties gpHibernateProperties() {
+        return new Properties() {
+            private static final long serialVersionUID = 3109256773218160485L;
+
+            {
+                this.put("persistence.dialect",
+                         gpHibernateProperties.getHibDatabasePlatform());
+                this.put("hibernate.hbm2ddl.auto",
+                         gpHibernateProperties.getHibHbm2ddlAuto());
+                this.put("hibernate.show_sql",
+                         gpHibernateProperties.isHibShowSql());
+                this.put("hibernate.cache.provider_class",
+                         gpHibernateProperties.getHibCacheProviderClass());
+                this.put("hibernate.cache.region.factory_class",
+                         gpHibernateProperties.getHibCacheRegionFactoryClass());
+                this.put("hibernate.cache.use_second_level_cache",
+                         gpHibernateProperties.isHibUseSecondLevelCache());
+                this.put("hibernate.cache.use_query_cache",
+                         gpHibernateProperties.isHibUseQueryCache());
+                this.put("hibernate.generate_statistics",
+                         gpHibernateProperties.isHibGenerateStatistics());
+                this.put("hibernate.default_schema",
+                         gpHibernateProperties.getHibDefaultSchema());
+                this.put("hibernate.default_schema",
+                         gpHibernateProperties.getHibDefaultSchema());
+                this.put("net.sf.ehcache.configurationResourceName",
+                         gpHibernateProperties.getEhcacheConfResourceName());
+            }
+        };
+    }
 }

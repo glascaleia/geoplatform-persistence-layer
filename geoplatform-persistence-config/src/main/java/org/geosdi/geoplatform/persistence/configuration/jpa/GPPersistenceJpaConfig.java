@@ -35,11 +35,125 @@
  */
 package org.geosdi.geoplatform.persistence.configuration.jpa;
 
+import java.util.Properties;
+import javax.sql.DataSource;
+import org.geosdi.geoplatform.persistence.configuration.properties.GPPersistenceConnector;
+import org.geosdi.geoplatform.persistence.configuration.properties.GPPersistenceHibProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
+import org.springframework.instrument.classloading.LoadTimeWeaver;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
 /**
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
- * @email  giuseppe.lascaleia@geosdi.org
+ * @email giuseppe.lascaleia@geosdi.org
  */
+@Configuration
+@Profile(value = "jpa")
+@EnableTransactionManagement
 public class GPPersistenceJpaConfig {
 
+    @Autowired
+    private GPPersistenceConnector gpPersistenceConnector;
+    //
+    @Autowired
+    private GPPersistenceHibProperties gpHibernateProperties;
+
+    public LocalContainerEntityManagerFactoryBean gpEntityManagerFactory() {
+        final LocalContainerEntityManagerFactoryBean gpFactoryBean = new LocalContainerEntityManagerFactoryBean();
+        gpFactoryBean.setDataSource(this.gpDataSource());
+        gpFactoryBean.setPackagesToScan(
+                this.gpPersistenceConnector.getPackagesToScan());
+
+        final JpaVendorAdapter gpVendorAdapter = new HibernateJpaVendorAdapter() {
+            {
+                this.setDatabasePlatform(
+                        gpHibernateProperties.getHibDatabasePlatform());
+                this.setShowSql(gpHibernateProperties.isHibShowSql());
+                this.setGenerateDdl(gpHibernateProperties.isHibGenerateDdl());
+            }
+        };
+
+        gpFactoryBean.setJpaVendorAdapter(gpVendorAdapter);
+        gpFactoryBean.setLoadTimeWeaver(this.gpLoadTimeWeaver());
+        gpFactoryBean.setJpaProperties(gpJpaProperties());
+
+        return gpFactoryBean;
+    }
+
+    /**
+     * TODO : Change this implementation with {@link ComboPooledDataSource}
+     */
+    @Bean
+    public DataSource gpDataSource() {
+        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(
+                this.gpPersistenceConnector.getDriverClassName());
+        dataSource.setUrl(this.gpPersistenceConnector.getUrl());
+        dataSource.setUsername(this.gpPersistenceConnector.getUsername());
+        dataSource.setPassword(this.gpPersistenceConnector.getPassword());
+
+        return dataSource;
+    }
+
+    @Bean
+    public PlatformTransactionManager gpTransactionManager() {
+        final JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(
+                this.gpEntityManagerFactory().getObject());
+
+        return transactionManager;
+    }
+
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor persistenceExceptionTranslationPostProcessor() {
+        return new PersistenceExceptionTranslationPostProcessor();
+    }
+
+    @Bean
+    public LoadTimeWeaver gpLoadTimeWeaver() {
+        return new InstrumentationLoadTimeWeaver();
+    }
+
+    final Properties gpJpaProperties() {
+        return new Properties() {
+            private static final long serialVersionUID = 3109256773218160485L;
+
+            {
+                this.put("persistence.dialect",
+                         gpHibernateProperties.getHibDatabasePlatform());
+                this.put("hibernate.hbm2ddl.auto",
+                         gpHibernateProperties.getHibHbm2ddlAuto());
+                this.put("hibernate.show_sql",
+                         gpHibernateProperties.isHibShowSql());
+                this.put("hibernate.cache.provider_class",
+                         gpHibernateProperties.getHibCacheProviderClass());
+                this.put("hibernate.cache.region.factory_class",
+                         gpHibernateProperties.getHibCacheRegionFactoryClass());
+                this.put("hibernate.cache.use_second_level_cache",
+                         gpHibernateProperties.isHibUseSecondLevelCache());
+                this.put("hibernate.cache.use_query_cache",
+                         gpHibernateProperties.isHibUseQueryCache());
+                this.put("hibernate.generate_statistics",
+                         gpHibernateProperties.isHibGenerateStatistics());
+                this.put("hibernate.default_schema",
+                         gpHibernateProperties.getHibDefaultSchema());
+                this.put("hibernate.default_schema",
+                         gpHibernateProperties.getHibDefaultSchema());
+                this.put("net.sf.ehcache.configurationResourceName",
+                         gpHibernateProperties.getEhcacheConfResourceName());
+            }
+        };
+    }
 }
