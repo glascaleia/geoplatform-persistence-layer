@@ -41,5 +41,4 @@ package org.geosdi.geoplatform.persistence.configuration.properties;
  * @email  giuseppe.lascaleia@geosdi.org
  */
 public class GPPersistenceHibProperties {
-
 }
