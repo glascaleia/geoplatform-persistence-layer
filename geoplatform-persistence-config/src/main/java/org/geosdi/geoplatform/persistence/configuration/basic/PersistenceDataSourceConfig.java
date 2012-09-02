@@ -33,23 +33,15 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.persistence.configuration.jpa;
+package org.geosdi.geoplatform.persistence.configuration.basic;
 
-import java.util.Properties;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 import javax.sql.DataSource;
 import org.geosdi.geoplatform.persistence.configuration.properties.GPPersistenceConnector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
-import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
-import org.springframework.instrument.classloading.LoadTimeWeaver;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.JpaVendorAdapter;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 /**
  *
@@ -57,52 +49,23 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @email giuseppe.lascaleia@geosdi.org
  */
 @Configuration
-@Profile(value = "jpa")
-@EnableTransactionManagement
-public class GPPersistenceJpaConfig {
-
+public class PersistenceDataSourceConfig {
+    
     @Autowired
     private GPPersistenceConnector gpPersistenceConnector;
-    //
-    @Autowired
-    private DataSource persitenceDataSource;
-    //
-    @Autowired
-    private JpaVendorAdapter jpaVendorAdapter;
-    //
-    @Autowired
-    private Properties hibernateProperties;
 
+    /**
+     * TODO : Change this implementation with {@link ComboPooledDataSource}
+     */
     @Bean
-    public LocalContainerEntityManagerFactoryBean gpEntityManagerFactory() {
-        final LocalContainerEntityManagerFactoryBean gpFactoryBean = new LocalContainerEntityManagerFactoryBean();
-        gpFactoryBean.setDataSource(this.persitenceDataSource);
-        gpFactoryBean.setPackagesToScan(
-                this.gpPersistenceConnector.getPackagesToScan());
+    public DataSource persitenceDataSource() {
+        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(
+                this.gpPersistenceConnector.getDriverClassName());
+        dataSource.setUrl(this.gpPersistenceConnector.getUrl());
+        dataSource.setUsername(this.gpPersistenceConnector.getUsername());
+        dataSource.setPassword(this.gpPersistenceConnector.getPassword());
 
-        gpFactoryBean.setJpaVendorAdapter(this.jpaVendorAdapter);
-        gpFactoryBean.setLoadTimeWeaver(this.gpLoadTimeWeaver());
-        gpFactoryBean.setJpaProperties(this.hibernateProperties);
-
-        return gpFactoryBean;
-    }
-
-    @Bean
-    public PlatformTransactionManager gpTransactionManager() {
-        final JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(
-                this.gpEntityManagerFactory().getObject());
-
-        return transactionManager;
-    }
-
-    @Bean
-    public PersistenceExceptionTranslationPostProcessor persistenceExceptionTranslationPostProcessor() {
-        return new PersistenceExceptionTranslationPostProcessor();
-    }
-
-    @Bean
-    public LoadTimeWeaver gpLoadTimeWeaver() {
-        return new InstrumentationLoadTimeWeaver();
+        return dataSource;
     }
 }

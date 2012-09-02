@@ -33,19 +33,13 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.persistence.configuration.hibernate;
+package org.geosdi.geoplatform.persistence.configuration.basic;
 
 import java.util.Properties;
-import javax.sql.DataSource;
-import org.geosdi.geoplatform.persistence.configuration.properties.GPPersistenceConnector;
+import org.geosdi.geoplatform.persistence.configuration.properties.GPPersistenceHibProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
-import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  *
@@ -53,40 +47,40 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @email giuseppe.lascaleia@geosdi.org
  */
 @Configuration
-@Profile(value = "hibernate")
-@EnableTransactionManagement
-public class GPPersistenceHibernateConfig {
+public class PersistenceHibernateProperties {
 
     @Autowired
-    private GPPersistenceConnector gpPersistenceConnector;
-    //
-    @Autowired
-    private DataSource persitenceDataSource;
-    //
-    @Autowired
-    private Properties hibernateProperties;
+    private GPPersistenceHibProperties gpHibernateProperties;
 
     @Bean
-    public AnnotationSessionFactoryBean gpSessionFactoryBean() {
-        final AnnotationSessionFactoryBean factoryBean = new AnnotationSessionFactoryBean();
-        factoryBean.setDataSource(this.persitenceDataSource);
-        factoryBean.setPackagesToScan(
-                this.gpPersistenceConnector.getPackagesToScan());
-        factoryBean.setHibernateProperties(this.hibernateProperties);
+    public Properties hibernateProperties() {
+        return new Properties() {
+            private static final long serialVersionUID = 3109256773218160485L;
 
-        return factoryBean;
-    }
-
-    @Bean
-    public HibernateTransactionManager transactionManager() {
-        final HibernateTransactionManager txManager = new HibernateTransactionManager();
-        txManager.setSessionFactory(this.gpSessionFactoryBean().getObject());
-
-        return txManager;
-    }
-
-    @Bean
-    public PersistenceExceptionTranslationPostProcessor sessionExceptionTranslationPostProcessor() {
-        return new PersistenceExceptionTranslationPostProcessor();
+            {
+                this.put("persistence.dialect",
+                         gpHibernateProperties.getHibDatabasePlatform());
+                this.put("hibernate.hbm2ddl.auto",
+                         gpHibernateProperties.getHibHbm2ddlAuto());
+                this.put("hibernate.show_sql",
+                         gpHibernateProperties.isHibShowSql());
+                this.put("hibernate.cache.provider_class",
+                         gpHibernateProperties.getHibCacheProviderClass());
+                this.put("hibernate.cache.region.factory_class",
+                         gpHibernateProperties.getHibCacheRegionFactoryClass());
+                this.put("hibernate.cache.use_second_level_cache",
+                         gpHibernateProperties.isHibUseSecondLevelCache());
+                this.put("hibernate.cache.use_query_cache",
+                         gpHibernateProperties.isHibUseQueryCache());
+                this.put("hibernate.generate_statistics",
+                         gpHibernateProperties.isHibGenerateStatistics());
+                this.put("hibernate.default_schema",
+                         gpHibernateProperties.getHibDefaultSchema());
+                this.put("hibernate.default_schema",
+                         gpHibernateProperties.getHibDefaultSchema());
+                this.put("net.sf.ehcache.configurationResourceName",
+                         gpHibernateProperties.getEhcacheConfResourceName());
+            }
+        };
     }
 }

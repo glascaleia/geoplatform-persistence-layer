@@ -35,21 +35,13 @@
  */
 package org.geosdi.geoplatform.persistence.configuration.jpa;
 
-import java.util.Properties;
-import javax.sql.DataSource;
-import org.geosdi.geoplatform.persistence.configuration.properties.GPPersistenceConnector;
+import org.geosdi.geoplatform.persistence.configuration.properties.GPPersistenceHibProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
-import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
-import org.springframework.instrument.classloading.LoadTimeWeaver;
-import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 /**
  *
@@ -58,51 +50,22 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Configuration
 @Profile(value = "jpa")
-@EnableTransactionManagement
-public class GPPersistenceJpaConfig {
+public class JpaVendorAdapterConfig {
 
     @Autowired
-    private GPPersistenceConnector gpPersistenceConnector;
-    //
-    @Autowired
-    private DataSource persitenceDataSource;
-    //
-    @Autowired
-    private JpaVendorAdapter jpaVendorAdapter;
-    //
-    @Autowired
-    private Properties hibernateProperties;
+    private GPPersistenceHibProperties gpHibernateProperties;
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean gpEntityManagerFactory() {
-        final LocalContainerEntityManagerFactoryBean gpFactoryBean = new LocalContainerEntityManagerFactoryBean();
-        gpFactoryBean.setDataSource(this.persitenceDataSource);
-        gpFactoryBean.setPackagesToScan(
-                this.gpPersistenceConnector.getPackagesToScan());
+    public JpaVendorAdapter jpaVendorAdapter() {
+        final JpaVendorAdapter gpVendorAdapter = new HibernateJpaVendorAdapter() {
+            {
+                this.setDatabasePlatform(
+                        gpHibernateProperties.getHibDatabasePlatform());
+                this.setShowSql(gpHibernateProperties.isHibShowSql());
+                this.setGenerateDdl(gpHibernateProperties.isHibGenerateDdl());
+            }
+        };
 
-        gpFactoryBean.setJpaVendorAdapter(this.jpaVendorAdapter);
-        gpFactoryBean.setLoadTimeWeaver(this.gpLoadTimeWeaver());
-        gpFactoryBean.setJpaProperties(this.hibernateProperties);
-
-        return gpFactoryBean;
-    }
-
-    @Bean
-    public PlatformTransactionManager gpTransactionManager() {
-        final JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(
-                this.gpEntityManagerFactory().getObject());
-
-        return transactionManager;
-    }
-
-    @Bean
-    public PersistenceExceptionTranslationPostProcessor persistenceExceptionTranslationPostProcessor() {
-        return new PersistenceExceptionTranslationPostProcessor();
-    }
-
-    @Bean
-    public LoadTimeWeaver gpLoadTimeWeaver() {
-        return new InstrumentationLoadTimeWeaver();
+        return gpVendorAdapter;
     }
 }
