@@ -71,13 +71,11 @@ public class PersistenceJpaTest {
         car = new Car();
         car.setPlate("AR793M");
         car.setModel("Fiat Punto");
-
         jpaCarDAO.save(car);
     }
 
     @Test
     public void testJpaProfile() {
-
         logger.info("Car Found @@@@@@@@@@@@@@@@@@@@@@@@@ " + car);
 
         this.jpaCarDAO.delete(car);

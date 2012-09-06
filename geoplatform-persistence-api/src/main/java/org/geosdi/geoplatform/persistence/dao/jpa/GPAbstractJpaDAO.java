@@ -101,7 +101,8 @@ public abstract class GPAbstractJpaDAO<T extends Object, ID extends Serializable
 
     @Override
     public void delete(T entity) {
-        this.entityManager.remove(entity);
+        T theEntity = this.entityManager.merge(entity);
+        this.entityManager.remove(theEntity);
     }
 
     @Override
@@ -150,7 +151,7 @@ public abstract class GPAbstractJpaDAO<T extends Object, ID extends Serializable
                     "The Entity with ID : " + entityId + " has been already deleted.");
         }
 
-        this.entityManager.remove(entity);
+        this.delete(entity);
     }
 
     protected Class< T> getPersistentClass() {
