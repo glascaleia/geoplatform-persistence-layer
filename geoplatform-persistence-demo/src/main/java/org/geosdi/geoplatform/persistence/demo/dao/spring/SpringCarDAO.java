@@ -44,6 +44,7 @@ import org.geosdi.geoplatform.persistence.demo.model.Car;
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-public interface SpringCarDAO extends GeoPlatformJpaRepository<Car, Long>,
-        ICarDAO<Car> {
+public interface SpringCarDAO extends GeoPlatformJpaRepository<Car, Long> {
+    
+    
 }

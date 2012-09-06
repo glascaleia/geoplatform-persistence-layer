@@ -35,7 +35,7 @@
  */
 package org.geosdi.geoplatform.persistence.demo;
 
-import org.geosdi.geoplatform.persistence.dao.GPAbstractDAO;
+import org.geosdi.geoplatform.persistence.demo.dao.ICarDAO;
 import org.geosdi.geoplatform.persistence.demo.model.Car;
 import org.geosdi.geoplatform.persistence.loader.PersistenceLoaderConfigurer;
 import org.junit.Before;
@@ -63,7 +63,7 @@ public class PersistenceJpaTest {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     //
     @Autowired
-    private GPAbstractDAO jpaCarDAO;
+    private ICarDAO<Car> jpaCarDAO;
     private Car car;
 
     @Before
@@ -76,7 +76,8 @@ public class PersistenceJpaTest {
 
     @Test
     public void testJpaProfile() {
-        logger.info("Car Found @@@@@@@@@@@@@@@@@@@@@@@@@ " + car);
+        logger.info("Persistence JPA Test - Car Found @@@@@@@@@@@@"
+                + "@@@@@@@@@@@@@ " + car);
 
         this.jpaCarDAO.delete(car);
     }

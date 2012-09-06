@@ -43,8 +43,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
-import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
@@ -67,8 +67,8 @@ public class GPPersistenceHibernateConfig {
     private Properties hibernateProperties;
 
     @Bean
-    public AnnotationSessionFactoryBean gpSessionFactoryBean() {
-        final AnnotationSessionFactoryBean factoryBean = new AnnotationSessionFactoryBean();
+    public LocalSessionFactoryBean gpSessionFactoryBean() {
+        final LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
         factoryBean.setDataSource(this.persitenceDataSource);
         factoryBean.setPackagesToScan(
                 this.gpPersistenceConnector.getPackagesToScan());
