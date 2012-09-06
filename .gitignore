@@ -4,3 +4,4 @@ target
 .project
 *.class
 *.pyc
+.DS_Store
