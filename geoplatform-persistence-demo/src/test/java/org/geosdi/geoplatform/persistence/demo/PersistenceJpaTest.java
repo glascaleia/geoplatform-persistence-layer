@@ -33,16 +33,53 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.persistence.demo.dao;
+package org.geosdi.geoplatform.persistence.demo;
 
-import org.geosdi.geoplatform.persistence.dao.exception.GPDAOException;
+import org.geosdi.geoplatform.persistence.dao.GPAbstractDAO;
+import org.geosdi.geoplatform.persistence.demo.model.Car;
+import org.geosdi.geoplatform.persistence.loader.PersistenceLoaderConfigurer;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 /**
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-public interface ICarDAO<T extends Object> {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {PersistenceLoaderConfigurer.class},
+                      loader = AnnotationConfigContextLoader.class)
+@ActiveProfiles(value = {"jpa"})
+public class PersistenceJpaTest {
 
-    T findByPlate(String plat) throws GPDAOException;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    //
+    @Autowired
+    private GPAbstractDAO jpaCarDAO;
+    private Car car;
+
+    @Before
+    public void setUp() {
+        car = new Car();
+        car.setPlate("AR793M");
+        car.setModel("Fiat Punto");
+
+        jpaCarDAO.save(car);
+    }
+
+    @Test
+    public void testJpaProfile() {
+
+        logger.info("Car Found @@@@@@@@@@@@@@@@@@@@@@@@@ " + car);
+
+        this.jpaCarDAO.delete(car);
+    }
 }

@@ -37,8 +37,9 @@ package org.geosdi.geoplatform.persistence.loader;
 
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.io.ClassPathResource;
 
 /**
@@ -47,14 +48,16 @@ import org.springframework.core.io.ClassPathResource;
  * @email giuseppe.lascaleia@geosdi.org
  */
 @Configuration
-@Profile(value = "test")
+@ComponentScan(basePackages = {"org.geosdi.geoplatform.persistence"
+    + ".configuration"})
+@ImportResource(value = {"classpath*:persistenceContext.xml"})
 public class PersistenceLoaderConfigurer {
 
     @Bean
     public static PropertyPlaceholderConfigurer persistenceConfigurer() {
         final PropertyPlaceholderConfigurer persistenceConfigurer = new PropertyPlaceholderConfigurer();
         persistenceConfigurer.setLocation(new ClassPathResource(
-                "gp-dp.properties"));
+                "gp-db.properties"));
         persistenceConfigurer.setIgnoreUnresolvablePlaceholders(true);
 
         return persistenceConfigurer;

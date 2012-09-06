@@ -64,22 +64,22 @@ public class PersistenceHibernateProperties {
                          gpHibernateProperties.getHibHbm2ddlAuto());
                 this.put("hibernate.show_sql",
                          gpHibernateProperties.isHibShowSql());
-                this.put("hibernate.cache.provider_class",
-                         gpHibernateProperties.getHibCacheProviderClass());
-                this.put("hibernate.cache.region.factory_class",
-                         gpHibernateProperties.getHibCacheRegionFactoryClass());
-                this.put("hibernate.cache.use_second_level_cache",
-                         gpHibernateProperties.isHibUseSecondLevelCache());
-                this.put("hibernate.cache.use_query_cache",
-                         gpHibernateProperties.isHibUseQueryCache());
-                this.put("hibernate.generate_statistics",
-                         gpHibernateProperties.isHibGenerateStatistics());
+//                this.put("hibernate.cache.provider_class",
+//                         gpHibernateProperties.getHibCacheProviderClass());
+//                this.put("hibernate.cache.region.factory_class",
+//                         gpHibernateProperties.getHibCacheRegionFactoryClass());
+//                this.put("hibernate.cache.use_second_level_cache",
+//                         gpHibernateProperties.isHibUseSecondLevelCache());
+//                this.put("hibernate.cache.use_query_cache",
+//                         gpHibernateProperties.isHibUseQueryCache());
+//                this.put("hibernate.generate_statistics",
+//                         gpHibernateProperties.isHibGenerateStatistics());
                 this.put("hibernate.default_schema",
                          gpHibernateProperties.getHibDefaultSchema());
                 this.put("hibernate.default_schema",
                          gpHibernateProperties.getHibDefaultSchema());
-                this.put("net.sf.ehcache.configurationResourceName",
-                         gpHibernateProperties.getEhcacheConfResourceName());
+//                this.put("net.sf.ehcache.configurationResourceName",
+//                         gpHibernateProperties.getEhcacheConfResourceName());
             }
         };
     }

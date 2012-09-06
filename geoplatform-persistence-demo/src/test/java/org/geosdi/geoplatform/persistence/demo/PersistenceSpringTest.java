@@ -33,16 +33,13 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.persistence.demo.dao;
-
-import org.geosdi.geoplatform.persistence.dao.exception.GPDAOException;
+package org.geosdi.geoplatform.persistence.demo;
 
 /**
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
- * @email giuseppe.lascaleia@geosdi.org
+ * @email  giuseppe.lascaleia@geosdi.org
  */
-public interface ICarDAO<T extends Object> {
+public class PersistenceSpringTest {
 
-    T findByPlate(String plat) throws GPDAOException;
 }

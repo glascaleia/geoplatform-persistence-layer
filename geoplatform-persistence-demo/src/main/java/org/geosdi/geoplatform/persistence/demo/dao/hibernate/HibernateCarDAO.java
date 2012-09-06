@@ -42,6 +42,7 @@ import org.geosdi.geoplatform.persistence.demo.model.Car;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -50,6 +51,7 @@ import org.springframework.stereotype.Repository;
  * @email giuseppe.lascaleia@geosdi.org
  */
 @Repository(value = "hibernateCarDAO")
+@Profile(value = "hibernate")
 public class HibernateCarDAO extends GPAbstractHibernateDAO<Car, Long>
         implements ICarDAO<Car> {
 
@@ -58,7 +60,7 @@ public class HibernateCarDAO extends GPAbstractHibernateDAO<Car, Long>
     }
 
     @Override
-    public Car findByPlat(String plat) throws GPDAOException {
+    public Car findByPlate(String plat) throws GPDAOException {
         try {
             Criteria crit = super.getCurrentSession().createCriteria(
                     super.getPersistentClass());
