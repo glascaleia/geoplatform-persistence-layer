@@ -71,7 +71,7 @@ public class PersistenceHibernateTest {
         car = new Car();
         car.setPlate("AR793O");
         car.setModel("Fiat Bravo");
-        hibCarDAO.save(car);
+        hibCarDAO.persist(car);
     }
 
     @Test
@@ -79,6 +79,6 @@ public class PersistenceHibernateTest {
         logger.info("Persistence Hibernate Test - Car Found @@@@@@@@@@@@"
                 + "@@@@@@@@@@@@@ " + car);
 
-        this.hibCarDAO.delete(car);
+        this.hibCarDAO.delete(car.getId());
     }
 }

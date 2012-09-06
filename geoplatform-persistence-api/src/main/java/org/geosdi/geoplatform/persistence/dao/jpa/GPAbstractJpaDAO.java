@@ -40,7 +40,7 @@ import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.geosdi.geoplatform.persistence.dao.GPAbstractDAO;
+import org.geosdi.geoplatform.persistence.dao.GPBaseDAO;
 import org.geosdi.geoplatform.persistence.dao.exception.GPDAOException;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -58,7 +58,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public abstract class GPAbstractJpaDAO<T extends Object, ID extends Serializable>
-        implements GPAbstractDAO<T, ID> {
+        implements GPBaseDAO<T, ID> {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
     //
@@ -78,11 +78,28 @@ public abstract class GPAbstractJpaDAO<T extends Object, ID extends Serializable
     }
 
     @Override
-    public T save(T entity) {
+    public T persist(T entity) {
         Preconditions.checkNotNull(entity);
 
         this.entityManager.persist(entity);
         return entity;
+    }
+
+    @Override
+    public void update(T entity) {
+        this.entityManager.merge(entity);
+    }
+
+    @Override
+    public void delete(Long id) {
+        T entity = this.find(id);
+
+        if (entity == null) {
+            throw new GPDAOException(
+                    "The Entity with ID : " + id + " has been already deleted.");
+        }
+
+        this.entityManager.remove(entity);
     }
 
     @Override
@@ -100,13 +117,7 @@ public abstract class GPAbstractJpaDAO<T extends Object, ID extends Serializable
     }
 
     @Override
-    public void delete(T entity) {
-        T theEntity = this.entityManager.merge(entity);
-        this.entityManager.remove(theEntity);
-    }
-
-    @Override
-    public T findById(Long id) throws GPDAOException {
+    public T find(Long id) throws GPDAOException {
         Preconditions.checkArgument(id != null);
 
         try {
@@ -135,23 +146,6 @@ public abstract class GPAbstractJpaDAO<T extends Object, ID extends Serializable
             logger.error("HibernateException : " + ex);
             throw new GPDAOException(ex);
         }
-    }
-
-    @Override
-    public void update(T entity) {
-        this.entityManager.merge(entity);
-    }
-
-    @Override
-    public void deleteById(Long entityId) {
-        T entity = this.findById(entityId);
-
-        if (entity == null) {
-            throw new GPDAOException(
-                    "The Entity with ID : " + entityId + " has been already deleted.");
-        }
-
-        this.delete(entity);
     }
 
     protected Class< T> getPersistentClass() {

@@ -38,7 +38,7 @@ package org.geosdi.geoplatform.persistence.dao.hibernate;
 import com.google.common.base.Preconditions;
 import java.io.Serializable;
 import java.util.List;
-import org.geosdi.geoplatform.persistence.dao.GPAbstractDAO;
+import org.geosdi.geoplatform.persistence.dao.GPBaseDAO;
 import org.geosdi.geoplatform.persistence.dao.exception.GPDAOException;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -58,7 +58,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public abstract class GPAbstractHibernateDAO<T extends Object, ID extends Serializable>
-        implements GPAbstractDAO<T, ID> {
+        implements GPBaseDAO<T, ID> {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
     private Class<T> persistentClass;
@@ -71,15 +71,24 @@ public abstract class GPAbstractHibernateDAO<T extends Object, ID extends Serial
     }
 
     @Override
-    public T save(T entity) {
+    public T persist(T entity) {
         Preconditions.checkNotNull(entity);
+        
         getCurrentSession().persist(entity);
         return entity;
     }
 
     @Override
-    public void delete(T entity) {
+    public void update(T entity) {
         Preconditions.checkNotNull(entity);
+
+        getCurrentSession().merge(entity);
+    }
+
+    @Override
+    public void delete(Long id) {
+        T entity = find(id);
+
         getCurrentSession().delete(entity);
     }
 
@@ -98,7 +107,7 @@ public abstract class GPAbstractHibernateDAO<T extends Object, ID extends Serial
     }
 
     @Override
-    public T findById(Long id) throws GPDAOException {
+    public T find(Long id) throws GPDAOException {
         Preconditions.checkArgument(id != null);
 
         try {
@@ -126,20 +135,6 @@ public abstract class GPAbstractHibernateDAO<T extends Object, ID extends Serial
             logger.error("HibernateException : " + ex);
             throw new GPDAOException(ex);
         }
-    }
-
-    @Override
-    public void update(T entity) {
-        Preconditions.checkNotNull(entity);
-
-        getCurrentSession().merge(entity);
-    }
-
-    @Override
-    public void deleteById(Long entityId) {
-        T entity = findById(entityId);
-
-        delete(entity);
     }
 
     protected Session getCurrentSession() {
