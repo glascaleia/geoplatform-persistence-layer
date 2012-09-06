@@ -33,43 +33,19 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.persistence.demo.dao.jpa;
+package org.geosdi.geoplatform.persistence.demo.bootstrap;
 
-import org.geosdi.geoplatform.persistence.dao.exception.GPDAOException;
-import org.geosdi.geoplatform.persistence.dao.jpa.GPAbstractJpaDAO;
-import org.geosdi.geoplatform.persistence.demo.dao.ICarDAO;
-import org.geosdi.geoplatform.persistence.demo.model.Car;
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.criterion.Restrictions;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-@Repository(value = "jpaCarDAO")
-@Profile(value = "jpa")
-public class JpaCarDAO extends GPAbstractJpaDAO<Car, Long> implements
-        ICarDAO {
-
-    public JpaCarDAO() {
-        super(Car.class);
-    }
-
-    @Override
-    public Car findByPlate(String plat) throws GPDAOException {
-        try {
-            Criteria crit = super.getSession().createCriteria(
-                    super.getPersistentClass());
-            crit.add(Restrictions.eq("plate", plat));
-
-            return (Car) crit.uniqueResult();
-        } catch (HibernateException ex) {
-            logger.error(("HibernateException : " + ex));
-            throw new GPDAOException(ex);
-        }
-    }
+@Configuration
+@Profile(value = "springData")
+@ImportResource(value = "classpath*:springDataContext.xml")
+public class SpringDataAppConfig {
 }

@@ -36,8 +36,9 @@
 package org.geosdi.geoplatform.persistence.demo.dao.spring;
 
 import org.geosdi.geoplatform.persistence.dao.spring.GeoPlatformJpaRepository;
-import org.geosdi.geoplatform.persistence.demo.dao.ICarDAO;
 import org.geosdi.geoplatform.persistence.demo.model.Car;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  *
@@ -45,6 +46,7 @@ import org.geosdi.geoplatform.persistence.demo.model.Car;
  * @email giuseppe.lascaleia@geosdi.org
  */
 public interface SpringCarDAO extends GeoPlatformJpaRepository<Car, Long> {
-    
-    
+
+    @Query(value = "Select c from Car c where c.plate = :plate")
+    Car findByPlate(@Param(value = "plate") String plate);
 }

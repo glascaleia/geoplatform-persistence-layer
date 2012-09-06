@@ -53,7 +53,7 @@ import org.springframework.stereotype.Repository;
 @Repository(value = "hibernateCarDAO")
 @Profile(value = "hibernate")
 public class HibernateCarDAO extends GPAbstractHibernateDAO<Car, Long>
-        implements ICarDAO<Car> {
+        implements ICarDAO {
 
     public HibernateCarDAO() {
         super(Car.class);

@@ -63,7 +63,7 @@ public class PersistenceHibernateTest {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     //
     @Autowired
-    private ICarDAO<Car> hibCarDAO;
+    private ICarDAO hibCarDAO;
     private Car car;
     
      @Before

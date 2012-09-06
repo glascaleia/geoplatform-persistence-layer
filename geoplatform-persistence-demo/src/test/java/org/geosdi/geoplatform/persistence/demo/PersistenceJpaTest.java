@@ -63,7 +63,7 @@ public class PersistenceJpaTest {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     //
     @Autowired
-    private ICarDAO<Car> jpaCarDAO;
+    private ICarDAO jpaCarDAO;
     private Car car;
 
     @Before
