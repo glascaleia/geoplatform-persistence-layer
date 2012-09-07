@@ -33,52 +33,32 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.persistence.demo;
+package org.geosdi.geoplatform.persistence.configuration.export;
 
-import org.geosdi.geoplatform.persistence.demo.dao.ICarDAO;
-import org.geosdi.geoplatform.persistence.demo.model.Car;
-import org.geosdi.geoplatform.persistence.loader.PersistenceLoaderConfigurer;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import org.hibernate.tool.hbm2ddl.SchemaExport;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {PersistenceLoaderConfigurer.class},
-                      loader = AnnotationConfigContextLoader.class)
-@ActiveProfiles(value = {"hibernate"})
-public class PersistenceHibernateTest {
+public abstract class PersistenceSchemaExport implements InitializingBean {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    //
-    @Autowired
-    private ICarDAO hibCarDAO;
-    private Car car;
+    protected SchemaExport schema;
 
-    @Before
-    public void setUp() {
-        car = new Car();
-        car.setPlate("AR793O");
-        car.setModel("Fiat Bravo");
-        hibCarDAO.persist(car);
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        createSchema();
     }
 
-    @Test
-    public void testHibernateProfile() {
-        logger.info("Persistence Hibernate Test - Car Found @@@@@@@@@@@@"
-                + "@@@@@@@@@@@@@ " + car);
+    protected void exportSchema() {
+        schema.setOutputFile("target/schema.sql");
 
-        this.hibCarDAO.delete(car.getId());
+        schema.setFormat(true);
+        schema.setDelimiter(";");
+        schema.create(true, false);
     }
+
+    protected abstract void createSchema();
 }

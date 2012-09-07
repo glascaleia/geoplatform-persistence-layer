@@ -33,54 +33,32 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.persistence.configuration.basic;
+package org.geosdi.geoplatform.persistence.configuration.hibernate.export;
 
-import java.util.Properties;
-import org.geosdi.geoplatform.persistence.configuration.properties.GPPersistenceHibProperties;
+import org.geosdi.geoplatform.persistence.configuration.export.PersistenceSchemaExport;
+import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
  * @email giuseppe.lascaleia@geosdi.org
  */
-@Configuration
-public class PersistenceHibernateProperties {
+@Component(value = "hibSchemaExport")
+@Profile("hibernate")
+public class GPHibernateSchemaExport extends PersistenceSchemaExport {
 
     @Autowired
-    private GPPersistenceHibProperties gpHibernateProperties;
+    private LocalSessionFactoryBean gpSessionFactoryBean;
 
-    @Bean
-    public Properties hibernateProperties() {
-        return new Properties() {
-            private static final long serialVersionUID = 3109256773218160485L;
+    @Override
+    protected void createSchema() {
+        this.schema = new SchemaExport(
+                this.gpSessionFactoryBean.getConfiguration());
 
-            {
-                this.put("hibernate.dialect",
-                         gpHibernateProperties.getHibDatabasePlatform());
-                this.put("hibernate.hbm2ddl.auto",
-                         gpHibernateProperties.getHibHbm2ddlAuto());
-                this.put("hibernate.show_sql",
-                         gpHibernateProperties.isHibShowSql());
-//                this.put("hibernate.cache.provider_class",
-//                         gpHibernateProperties.getHibCacheProviderClass());
-//                this.put("hibernate.cache.region.factory_class",
-//                         gpHibernateProperties.getHibCacheRegionFactoryClass());
-//                this.put("hibernate.cache.use_second_level_cache",
-//                         gpHibernateProperties.isHibUseSecondLevelCache());
-//                this.put("hibernate.cache.use_query_cache",
-//                         gpHibernateProperties.isHibUseQueryCache());
-//                this.put("hibernate.generate_statistics",
-//                         gpHibernateProperties.isHibGenerateStatistics());
-                this.put("hibernate.default_schema",
-                         gpHibernateProperties.getHibDefaultSchema());
-                this.put("hibernate.default_schema",
-                         gpHibernateProperties.getHibDefaultSchema());
-//                this.put("net.sf.ehcache.configurationResourceName",
-//                         gpHibernateProperties.getEhcacheConfResourceName());
-            }
-        };
+        super.exportSchema();
     }
 }
