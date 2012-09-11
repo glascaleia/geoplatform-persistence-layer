@@ -102,6 +102,8 @@
         <module>geoplatform-persistence-api</module>
         <module>geoplatform-persistence-config</module>
         <module>geoplatform-persistence-loader</module>
+        <module>geoplatform-basic-model</module>
+        <module>geoplatform-basic-dao</module>
         <module>geoplatform-persistence-demo</module>
     </modules>
     
