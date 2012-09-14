@@ -51,7 +51,7 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.geosdi.geoplatform.persistence.model.adapter.MultiPolygonAdapter;
-import org.geosdi.geoplatform.persistence.model.enums.GrantType;
+import org.geosdi.geoplatform.persistence.model.type.GrantType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;

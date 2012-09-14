@@ -61,10 +61,10 @@ public class GPApplication extends GPAccount {
     private String appID;
 
     /**
-     * @return the stringID: return the appID
+     * @return the naturalID: return the appID
      */
     @Override
-    public String getStringID() {
+    public String getNaturalID() {
         return this.getAppID();
     }
 

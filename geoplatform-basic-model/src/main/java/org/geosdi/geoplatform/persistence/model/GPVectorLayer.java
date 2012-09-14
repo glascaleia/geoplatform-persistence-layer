@@ -36,13 +36,11 @@
 package org.geosdi.geoplatform.persistence.model;
 
 import com.vividsolutions.jts.geom.Geometry;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-
-
-import javax.persistence.Column;
-import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlTransient;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.OnDelete;

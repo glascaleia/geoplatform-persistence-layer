@@ -33,17 +33,53 @@
  * wish to do so, delete this exception statement from your version.
  *
  */
-package org.geosdi.geoplatform.persistence.model;
+package org.geosdi.geoplatform.persistence.model.type;
+
+import java.io.Serializable;
 
 /**
- * @author Giuseppe La Scaleia - CNR IMAA geoSDI Group
- * @email giuseppe.lascaleia@geosdi.org
+ * @author Francesco Izzi - geoSDI
  * 
- * Web service standards from the Open Geospatial Consortium (OGC)
  */
-public enum GPCapabilityType {
+public enum GPLayerType implements Serializable {
 
-    WMS, // Web Map Server
-    WFS, // Web Feature Service
-    CSW; // Catalog Service for the Web
+    RASTER(1),
+    POINT(2),
+    LINESTRING(3),
+    POLYGON(4),
+    MULTIPOINT(5),
+    MULTILINESTRING(6),
+    MULTIPOLYGON(7);
+    //
+    private int code;
+
+    private GPLayerType() {
+    }
+
+    /**
+     * Create layer type.
+     *
+     * @param code to apply
+     */
+    private GPLayerType(int code) {
+        this.code = code;
+    }
+
+    /**
+     * 
+     * @return the code
+     */
+    public int getCode() {
+        return this.code;
+    }
+
+    /**
+     * Convert to string.
+     *
+     * @return string representation of layer type
+     */
+    @Override
+    public String toString() {
+        return Integer.toString(code);
+    }
 }

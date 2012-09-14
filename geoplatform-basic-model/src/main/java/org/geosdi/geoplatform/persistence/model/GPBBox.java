@@ -37,7 +37,6 @@ package org.geosdi.geoplatform.persistence.model;
 
 import java.io.Serializable;
 import javax.persistence.Column;
-
 import javax.persistence.Embeddable;
 
 /**

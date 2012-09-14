@@ -33,7 +33,7 @@
  * wish to do so, delete this exception statement from your version. 
  *
  */
-package org.geosdi.geoplatform.persistence.model.enums;
+package org.geosdi.geoplatform.persistence.model.type;
 
 /**
  * @author Francesco Izzi - CNR IMAA geoSDI Group
