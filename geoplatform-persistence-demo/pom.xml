@@ -44,13 +44,14 @@
             <version>${project.version}</version>
         </dependency>
         
-        <!-- HIBERNATE-SPATIAL -->
+        <!-- ============================================================= -->
+        <!-- ===================== HIBERNATE-SPATIAL ===================== -->
+        <!-- ============================================================= -->
         <dependency>
             <groupId>org.hibernatespatial</groupId>
             <artifactId>hibernate-spatial-postgis</artifactId>
         </dependency>
         
-        <!-- POSTGRES - POSTGIS -->
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
@@ -65,7 +66,7 @@
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
-        
+       
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>

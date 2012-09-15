@@ -49,7 +49,7 @@ import org.hibernate.annotations.Type;
 
 /**
  * @author Francesco Izzi - CNR IMAA - geoSDI
- * 
+ *
  */
 @XmlRootElement(name = "VectorLayer")
 @Entity(name = "VectorLayer")
@@ -84,8 +84,7 @@ public class GPVectorLayer extends GPLayer {
     }
 
     /**
-     * @param geometry
-     *            the geometry to set
+     * @param geometry the geometry to set
      */
     public void setGeometry(Geometry geometry) {
         this.geometry = geometry;
@@ -100,8 +99,7 @@ public class GPVectorLayer extends GPLayer {
     }
 
     /**
-     * @param folder
-     *            the folder to set
+     * @param folder the folder to set
      */
     @Override
     public void setFolder(GPFolder folder) {
@@ -117,8 +115,7 @@ public class GPVectorLayer extends GPLayer {
     }
 
     /**
-     * @param project
-     *            the project to set
+     * @param project the project to set
      */
     @Override
     public void setProject(GPProject project) {
@@ -132,7 +129,8 @@ public class GPVectorLayer extends GPLayer {
      */
     @Override
     public String toString() {
-        StringBuilder str = new StringBuilder(this.getClass().getSimpleName()).append(" {");
+        StringBuilder str = new StringBuilder(this.getClass().
+                getSimpleName()).append(" {");
         str.append(super.toString());
         str.append(", geometry=").append(geometry);
         return str.append("}").toString();

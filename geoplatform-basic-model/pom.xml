@@ -46,14 +46,11 @@
             <artifactId>hibernate-core</artifactId>
         </dependency>    
 
-        <!-- ============================================================= -->
-        <!-- ===================== HIBERNATE-SPATIAL ===================== -->
-        <!-- ============================================================= -->
         <dependency>
-            <groupId>org.hibernatespatial</groupId>
-            <artifactId>hibernate-spatial-postgis</artifactId>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
         </dependency>
-        
+            
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-acl</artifactId>
